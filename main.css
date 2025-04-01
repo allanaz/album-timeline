@@ -1,0 +1,108 @@
+#title {
+    display: flex;
+    justify-content: center;
+    font-size: 60px;
+    margin-bottom: -5px;
+    font-family: "Courier New", monospace;
+}
+
+#question {
+    display: flex;
+    justify-content: center;
+    font-family: "Courier New", monospace;
+
+    /* font-style: italic; */
+}
+
+p, li {
+  font-size: 18px;
+  font-family: "Courier New", monospace;
+}
+
+#clearButton {
+  background-color: white;
+  color: black;
+  border: 3px solid black;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 10px 20px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+  transition: all 0.2s ease;
+}
+
+#clearButton:hover {
+  background-color: black;
+  color: white;
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+}
+
+#clearButton:active {
+  transform: translate(5px, 5px);
+  box-shadow: none;
+}
+
+.typeahead-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-top: 8px;
+  }
+  
+  .typeahead-input {
+    width: 40%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    justify-content: center;
+    font-family: "Courier New", monospace;
+  }
+  
+  .typeahead-results {
+    position: absolute;
+    top: 40px;
+    padding: 0px 12px;
+    width: 40%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  
+  .result-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-family: "Courier New", monospace;
+  }
+  
+  .result-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .result-item strong {
+    color: #2a66db;
+    font-weight: 600;
+  }
+  
+  .result-score {
+    font-size: 12px;
+    color: #999;
+    margin-left: 8px;
+  }
+  
+  .no-results {
+    padding: 8px 12px;
+    color: #666;
+    font-style: italic;
+  }
