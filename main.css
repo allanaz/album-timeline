@@ -14,12 +14,17 @@
     /* font-style: italic; */
 }
 
+#listContainer {
+  display: none;
+  justify-content: center;
+}
+
 p, li {
   font-size: 18px;
   font-family: "Courier New", monospace;
 }
 
-#clearButton {
+.retro-button {
   background-color: white;
   color: black;
   border: 3px solid black;
@@ -31,16 +36,17 @@ p, li {
   cursor: pointer;
   box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
   transition: all 0.2s ease;
+  margin-right: 8px;
 }
 
-#clearButton:hover {
+.retro-button:hover {
   background-color: black;
   color: white;
   transform: translate(2px, 2px);
   box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
 }
 
-#clearButton:active {
+.retro-button:active {
   transform: translate(5px, 5px);
   box-shadow: none;
 }
@@ -55,11 +61,30 @@ p, li {
   .typeahead-input {
     width: 40%;
     padding: 10px 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
     justify-content: center;
     font-family: "Courier New", monospace;
+    background-color: white;
+    color: black;
+    border: 3px solid black;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+    padding: 8px 12px;
+    outline: none;
+    box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+    transition: all 0.2s ease;
+  }
+
+  .typeahead-input:focus {
+    border-color: black;
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+    transform: translate(2px, 2px);
+  }
+  
+  .typeahead-input::placeholder {
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
   }
   
   .typeahead-results {

@@ -12,8 +12,12 @@
       <div id="search-results" class="typeahead-results"></div>
     </div>
     <div id="container"></div>
+    <div id="listContainer">
+      <ol id="user_albums"></ol>
+    </div>
     <div class="typeahead-container">
-      <button type="button" id="clearButton">Clear</button>
+      <button type="button" id="editButton" class="retro-button">Edit</button>
+      <button type="button" id="clearButton" class="retro-button">Clear</button>
     </div>
   </body>
 </html>
@@ -45,7 +49,12 @@ d3.csv("https://raw.githubusercontent.com/allanaz/album-timeline/refs/heads/main
       if (index != -1) {
         currentData.push(data[index]);
         make_plot(currentData);
+        getUserAlbums(currentData);
       }
+    }
+    else if (event.key === 'Escape'){
+      this.value = "";
+      this.dispatchEvent(new Event("input"));
     }
   });
 
@@ -55,6 +64,7 @@ d3.csv("https://raw.githubusercontent.com/allanaz/album-timeline/refs/heads/main
     if (index != -1 && currentData.indexOf(data[index]) === -1) {
       currentData.push(data[index]);
       make_plot(currentData);
+      getUserAlbums(currentData);
     }
   });
 
@@ -62,14 +72,51 @@ d3.csv("https://raw.githubusercontent.com/allanaz/album-timeline/refs/heads/main
     const searchTerm = event.detail.name;
     currentData.push(...data.filter((album) => album['Artist Name'] === searchTerm && currentData.indexOf(album) === -1));
     make_plot(currentData);
+    getUserAlbums(currentData);
   });
 
   const clearButton = document.getElementById('clearButton');
   clearButton.addEventListener('click', function(event) {
     currentData = [];
     make_plot(currentData);
+    getUserAlbums(currentData);
   });
+
+  const editButton = document.getElementById('editButton');
+  editButton.addEventListener('click', function(event) {
+    // show the list
+    let plot = document.getElementById('container');
+    let list = document.getElementById('listContainer');
+    if (plot.style.display === "none"){
+      plot.style.display = "block";
+      list.style.display = "none";
+    } else {
+      plot.style.display = "none";
+      list.style.display = "flex";
+      getUserAlbums(currentData);
+    }
+  });
+  
 });
+
+function getUserAlbums(currentData) {
+    const listContainer = d3.select('ol#user_albums');
+      listContainer.selectAll('li')
+      .data(currentData)
+      .join('li')
+      .text(d => d['Album'] + ', ' + d['Artist Name'])
+      .style('cursor', 'pointer')
+      .on('click', function(event, d) {
+        // Remove the clicked item from currentData
+        const index = currentData.indexOf(d);
+        if (index > -1) {
+          currentData.splice(index, 1);
+        }
+        // Update the list after removing the item
+        getUserAlbums(currentData);
+        make_plot(currentData);
+      });
+}
 
 function dodge(data, {radius = 1, x = d => d} = {}) {
   const radius2 = radius ** 2;
