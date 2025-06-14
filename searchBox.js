@@ -174,7 +174,7 @@ function setupTypeahead(items, inputId, resultsId) {
       // Add metadata about the match if desired
       const scoreSpan = document.createElement('span');
       scoreSpan.className = 'result-score';
-      scoreSpan.textContent = `(score: ${score})`;
+      scoreSpan.textContent = `(Add Artist)`;
       div.appendChild(scoreSpan);
       
       // Handle result selection
