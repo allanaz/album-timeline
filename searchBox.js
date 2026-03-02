@@ -1,62 +1,4 @@
-// Main function to set up the typeahead
-function setupTypeahead(items, inputId, resultsId) {
-    const searchInput = document.getElementById(inputId);
-    const resultsContainer = document.getElementById(resultsId);
-    
-    // Create search index
-    const { wordIndex, prefixIndex } = createSearchIndices(items);
-    
-    // Setup event listeners
-    let debounceTimer;
-    searchInput.addEventListener('input', function() {
-      clearTimeout(debounceTimer);
-      
-      debounceTimer = setTimeout(() => {
-        const query = this.value.trim();
-        if (query.length < 2) {
-          resultsContainer.innerHTML = '';
-          return;
-        }
-        
-        // Perform search with ranking
-        const results = searchWithIndices(query, items, wordIndex, prefixIndex);
-        displayResults(results, resultsContainer, query, searchInput);
-      }, 250);
-    });
-  }
-  
-  // Create both word and prefix indices for more flexible searching
-  function createSearchIndices(items) {
-    const wordIndex = {};   // For full word matches
-    const prefixIndex = {}; // For prefix matches
-    
-    items.forEach((item, idx) => {
-      // Normalize the text
-      const normalizedItem = item.toLowerCase();
-      
-      // Index full words
-      const words = normalizedItem.split(/\W+/).filter(word => word.length > 1);
-      words.forEach(word => {
-        if (!wordIndex[word]) {
-          wordIndex[word] = new Set();
-        }
-        wordIndex[word].add(idx);
-        
-        // Index all prefixes of the word (for partial matching)
-        for (let i = 1; i <= word.length; i++) {
-          const prefix = word.substring(0, i);
-          if (!prefixIndex[prefix]) {
-            prefixIndex[prefix] = new Set();
-          }
-          prefixIndex[prefix].add(idx);
-        }
-      });
-    });
-    
-    return { wordIndex, prefixIndex };
-  }
-  
-  // Search function with fuzzy matching and relevance ranking
+// Search function with fuzzy matching and relevance ranking
   function searchWithIndices(query, items, wordIndex, prefixIndex) {
     // Split the query into words
     const queryWords = query.toLowerCase().split(/\W+/).filter(word => word.length > 0);
@@ -163,54 +105,37 @@ function setupTypeahead(items, inputId, resultsId) {
       return;
     }
     
-    results.forEach(({ item, score }) => {
+    results.forEach(({ item }) => {
       const div = document.createElement('div');
       div.className = 'result-item';
-      
-      // Highlight matching parts
-      const highlightedText = highlightMatches(item, query);
-      div.innerHTML = highlightedText;
-      
-      // Add metadata about the match if desired
+
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = item;
+      div.appendChild(nameSpan);
+
       const scoreSpan = document.createElement('span');
       scoreSpan.className = 'result-score';
-      scoreSpan.textContent = `(Add Artist)`;
+      scoreSpan.textContent = '(Add Artist)';
       div.appendChild(scoreSpan);
-      
-      // Handle result selection
+
       div.addEventListener('click', () => {
         inputElement.value = item;
-        //container.innerHTML = '';
-        
-        // Trigger any needed actions when a selection is made
+        container.innerHTML = '';
         const event = new Event('change', { bubbles: true });
         inputElement.dispatchEvent(event);
       });
 
-      scoreSpan.addEventListener('click', () => {
-        // Trigger any needed actions when a selection is made
-        const event = new CustomEvent('addArtist', { bubbles: true, detail: {name: item.split(', ')[1]}});
-        inputElement.dispatchEvent(event);
+      scoreSpan.addEventListener('click', (event) => {
+        event.stopPropagation();
+        container.innerHTML = '';
+        const artistEvent = new CustomEvent('addArtist', { bubbles: true, detail: {name: item.split(', ')[1]}});
+        inputElement.dispatchEvent(artistEvent);
       });
-      
+
       container.appendChild(div);
     });
   }
   
-  // Highlight matching text
-  function highlightMatches(text, query) {
-    const queryWords = query.toLowerCase().split(/\W+/).filter(word => word.length > 0);
-    let result = text;
-    
-    // queryWords.forEach(word => {
-    //   // Use a case-insensitive regex to find matches
-    //   const regex = new RegExp(`(${word})`, 'gi');
-    //   result = result.replace(regex, '<strong>$1</strong>');
-    // });
-    
-    return result;
-  }
-
   // Main implementation with optimizations for large datasets
 function createTypeaheadForLargeDataset(items, inputId, resultsId) {
     const searchInput = document.getElementById(inputId);
@@ -220,18 +145,6 @@ function createTypeaheadForLargeDataset(items, inputId, resultsId) {
     console.time('Index creation');
     const { wordIndex, prefixIndex } = createOptimizedIndices(items);
     console.timeEnd('Index creation');
-    
-    // Cache the indices in sessionStorage or localStorage
-    try {
-      if (window.sessionStorage) {
-        sessionStorage.setItem('typeahead_indices', JSON.stringify({
-          wordIndex: serializeIndices(wordIndex),
-          prefixIndex: serializeIndices(prefixIndex)
-        }));
-      }
-    } catch (e) {
-      console.warn('Could not cache indices:', e);
-    }
     
     // Setup debounced search
     let debounceTimer;
@@ -329,20 +242,3 @@ function createTypeaheadForLargeDataset(items, inputId, resultsId) {
       .slice(0, 10);
   }
   
-  // Helper to serialize indices for caching
-  function serializeIndices(index) {
-    const serialized = {};
-    for (const key in index) {
-      serialized[key] = Array.from(index[key]);
-    }
-    return serialized;
-  }
-  
-  // Helper to deserialize cached indices
-  function deserializeIndices(serialized) {
-    const deserialized = {};
-    for (const key in serialized) {
-      deserialized[key] = new Set(serialized[key]);
-    }
-    return deserialized;
-  }

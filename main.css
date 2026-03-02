@@ -60,9 +60,7 @@ p, li {
   
   .typeahead-input {
     width: 40%;
-    padding: 10px 12px;
     justify-content: center;
-    font-family: "Courier New", monospace;
     background-color: white;
     color: black;
     border: 3px solid black;

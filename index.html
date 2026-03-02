@@ -46,7 +46,7 @@ d3.csv("https://raw.githubusercontent.com/allanaz/album-timeline/refs/heads/main
       event.preventDefault(); // Optional: prevent form submission
       const searchTerm = this.value;
       let index = albumNames.indexOf(searchTerm);
-      if (index != -1) {
+      if (index != -1 && currentData.indexOf(data[index]) === -1) {
         currentData.push(data[index]);
         make_plot(currentData);
         getUserAlbums(currentData);
@@ -272,7 +272,7 @@ svg.selectAll("circle")
     tooltip.transition()
       .duration(300)
       .style("opacity", 0)
-      .style("visiblity", 'hidden')
+      .style("visibility", 'hidden')
     d3.select(this)
       .style("opacity", 1.0)})  
       
